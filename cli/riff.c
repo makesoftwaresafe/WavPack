@@ -295,7 +295,10 @@ int ParseRiffHeaderConfig (FILE *infile, char *infilename, char *fourcc, Wavpack
             else {
                 total_samples = data_chunk_size / WaveHeader.BlockAlign;
 
-                if (got_ds64 && total_samples != ds64_chunk.sampleCount64) {
+                // got a RF64 file that had the sampleCount64 field of the ds64 chunk set to zero (lazy??),
+                // so don't insist that it's correct unless it's set to "something"
+
+                if (got_ds64 && ds64_chunk.sampleCount64 && total_samples != ds64_chunk.sampleCount64) {
                     error_line ("%s is not a valid .WAV file!", infilename);
                     return WAVPACK_SOFT_ERROR;
                 }
